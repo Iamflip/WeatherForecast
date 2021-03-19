@@ -14,13 +14,5 @@ namespace WeatherAPI
         {
             Values = new List<WeatherForecast>();
         }
-
-        public IEnumerator GetEnumerator()
-        {
-            for (int i = 0; i < Values.Count; i++)
-            {
-                yield return Values[i];
-            }
-        }
     }
 }

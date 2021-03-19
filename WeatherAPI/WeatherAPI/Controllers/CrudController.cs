@@ -7,48 +7,46 @@ using System.Threading.Tasks;
 
 namespace WeatherAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CrudController : ControllerBase
     {
-        private readonly ValuesHolder holder;
+        private readonly ValuesHolder _holder;
 
         public CrudController(ValuesHolder holder)
         {
-            this.holder = holder;
+            _holder = holder;
         }
 
         [HttpPost("create")]
-        public IActionResult Create(DateTime date, int temperatureC)
+        public IActionResult Create([FromQuery] DateTime date, [FromQuery] int temperatureC)
         {
             WeatherForecast weatherForecast = new WeatherForecast(date, temperatureC);
-            holder.Values.Add(weatherForecast);
+            _holder.Values.Add(weatherForecast);
             return Ok();
         }
 
         [HttpPut("update")]
-        public IActionResult Update(DateTime date, int newTemperatureC)
+        public IActionResult Update([FromQuery] DateTime date, [FromQuery] int newTemperatureC)
         {
-            int i = 0;
-            foreach (var hold in holder)
+            foreach (var WeatherForecast in _holder.Values)
             {
-                if (date == holder.Values[i].Date)
+                if (date == WeatherForecast.Date)
                 {
-                    holder.Values[i].TemperatureC = newTemperatureC;
+                    WeatherForecast.TemperatureC = newTemperatureC;
                 }
-                i++;
             }
             return Ok();
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(DateTime firstDate, DateTime lastDate)
+        public IActionResult Delete([FromQuery] DateTime firstDate, [FromQuery] DateTime lastDate)
         {
-            for (int i = holder.Values.Count - 1; i >= 0; i--)
+            for (int i = _holder.Values.Count - 1; i >= 0; i--)
             {
-                if (holder.Values[i].Date >= firstDate && holder.Values[i].Date <= lastDate)
+                if (_holder.Values[i].Date >= firstDate && _holder.Values[i].Date <= lastDate)
                 {
-                    holder.Values.RemoveAt(i);
+                    _holder.Values.RemoveAt(i);
                 }
             }
             return Ok();
@@ -57,19 +55,19 @@ namespace WeatherAPI.Controllers
         [HttpGet("read")]
         public IActionResult Read()
         {
-            return Ok(holder.Values);
+            return Ok(_holder.Values);
         }
 
         [HttpGet("readfromto")]
-        public IActionResult ReadFromTo(DateTime firstDate, DateTime lastDate)
+        public IActionResult ReadFromTo([FromQuery] DateTime firstDate, [FromQuery] DateTime lastDate)
         {
             List<WeatherForecast> weathers = new List<WeatherForecast>();
 
-            for (int i = 0; i < holder.Values.Count; i++)
+            foreach (var WeatherForecast in _holder.Values)
             {
-                if (holder.Values[i].Date >= firstDate && holder.Values[i].Date <= lastDate)
+                if (WeatherForecast.Date >= firstDate && WeatherForecast.Date <= lastDate)
                 {
-                    weathers.Add(holder.Values[i]);
+                    weathers.Add(WeatherForecast);
                 }
             }
 
