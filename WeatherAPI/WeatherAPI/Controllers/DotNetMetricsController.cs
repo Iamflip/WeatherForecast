@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WeatherAPI.Enums;
+using MetricsInfrastucture.Enums;
 
-namespace WeatherAPI.Controllers
+namespace MetricsManager.Controllers
 {
     [Route("api/metrics/dotnet")]
     [ApiController]

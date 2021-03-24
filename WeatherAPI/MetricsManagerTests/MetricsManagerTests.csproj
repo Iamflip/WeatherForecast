@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeatherAPI\WeatherAPI.csproj" />
+    <ProjectReference Include="..\MetricsInfrastucture\MetricsInfrastucture.csproj" />
+    <ProjectReference Include="..\WeatherAPI\MetricsManager.csproj" />
   </ItemGroup>
 
 </Project>

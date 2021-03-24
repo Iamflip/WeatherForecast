@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WeatherAPI.Controllers
+namespace MetricsManager.Controllers
 {
     [Route("[controller]")]
     [ApiController]

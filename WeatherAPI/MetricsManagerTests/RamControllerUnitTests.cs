@@ -1,8 +1,8 @@
 ﻿using System;
 using Xunit;
-using WeatherAPI.Controllers;
+using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using WeatherAPI.Enums;
+using MetricsInfrastucture.Enums;
 
 namespace MetricsManagerTests
 {

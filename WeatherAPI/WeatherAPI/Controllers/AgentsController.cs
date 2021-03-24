@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WeatherAPI.Controllers
+namespace MetricsManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +30,7 @@ namespace WeatherAPI.Controllers
         }
 
         [HttpGet("read")]
-        public IActionResult ReadRegisterAgent()//Нужно добавить список который будет сохранять зарегестрированные агенты и в данном методе выводить их
+        public IActionResult ReadRegisteredAgents()//Нужно добавить список который будет сохранять зарегестрированные агенты и в данном методе выводить их
         {
             return Ok();
         }
