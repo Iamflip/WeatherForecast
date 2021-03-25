@@ -1,6 +1,6 @@
 using System;
 
-namespace WeatherAPI
+namespace MetricsManager
 {
     public class WeatherForecast
     {
