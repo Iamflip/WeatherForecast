@@ -3,16 +3,18 @@ using Xunit;
 using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MetricsInfrastucture.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace MetricsManagerTests
 {
     public class CpuControllerUnitTests
     {
         private CpuMetricsController _controller;
+        private readonly ILogger<CpuMetricsController> _logger;
 
         public CpuControllerUnitTests()
         {
-            _controller = new CpuMetricsController();
+            _controller = new CpuMetricsController(_logger);
         }
 
         [Fact]
@@ -20,8 +22,8 @@ namespace MetricsManagerTests
         {
             //Arrange
             var agentId = 1;
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
+            var fromTime = new DateTime(2012, 11, 11);
+            var toTime = new DateTime(2013, 11, 11);
 
             //Act
             var result = _controller.GetMetricsFromAgent(agentId, fromTime, toTime);
@@ -34,8 +36,8 @@ namespace MetricsManagerTests
         public void GetMetricsByPercentileFromAgent_ReturnsOk()
         {
             var agentId = 1;
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
+            var fromTime = new DateTime(2012, 11, 11);
+            var toTime = new DateTime(2013, 11, 11);
             var percentile = Percentile.P99;
 
             var result = _controller.GetMetricsByPercentileFromAgent(agentId, fromTime, toTime, percentile);
@@ -46,8 +48,8 @@ namespace MetricsManagerTests
         [Fact]
         public void GetMetricsFromAllCluster()
         {
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
+            var fromTime = new DateTime(2012, 11, 11);
+            var toTime = new DateTime(2013, 11, 11);
 
             var result = _controller.GetMetricsFromAllCluster(fromTime, toTime);
 
@@ -57,8 +59,8 @@ namespace MetricsManagerTests
         [Fact]
         public void GetMetricsByPercentileFromAllCluster()
         {
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
+            var fromTime = new DateTime(2012, 11, 11);
+            var toTime = new DateTime(2013, 11, 11);
             var percentile = Percentile.P99;
 
             var result = _controller.GetMetricsByPercentileFromAllCluster(fromTime, toTime, percentile);
