@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Data.SQLite;
 using MetricsAgent.Responses;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers
 {
@@ -17,7 +18,7 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<CpuMetricsController> _logger;
         private IRepository<CpuMetric> _repository;
-        private DateTime UNIX = new DateTime(1970, 01, 01);
+        private DateTime _UNIX = new DateTime(1970, 01, 01);
 
         public CpuMetricsController(ILogger<CpuMetricsController> logger, IRepository<CpuMetric> repository)
         {
@@ -26,22 +27,14 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
 
-        public CpuMetricsController(IRepository<CpuMetric> repository)
-        {
-            _repository = repository;
-        }
-
-        [HttpGet("read")]
-        public IActionResult Read()
-        {
-            return Ok();
-        }
-
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
         public IActionResult GetMetricsByPercentileFromAgent([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime,
             [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime} {percentile}");
+
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<CpuMetric, CpuMetricDto>());
+            var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
@@ -52,6 +45,11 @@ namespace MetricsAgent.Controllers
 
             metrics = SortAndDeleteForPercentile(metrics, percentile);
 
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(m.Map<CpuMetricDto>(metric));
+            }
+
             return Ok($"По перцентилю {percentile} нагрузка не превышает {metrics.Max(metric => metric.Value)}%");
         }
 
@@ -59,6 +57,9 @@ namespace MetricsAgent.Controllers
         public IActionResult GetMetricsFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime}");
+
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<CpuMetric, CpuMetricDto>());
+            var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
@@ -74,8 +75,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto
-                { Time = (DateTime)(UNIX.AddSeconds(metric.Time.TotalSeconds)), Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(m.Map<CpuMetricDto>(metric));
             }
 
             return Ok(response);

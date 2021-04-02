@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Metric;
 using MetricsAgent.Responses;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers
 {
@@ -30,6 +31,9 @@ namespace MetricsAgent.Controllers
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime}");
 
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<NetworkMetric, NetworkMetricDto>());
+            var m = config.CreateMapper();
+
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
             var response = new AllNetworkMetricsResponce()
@@ -39,8 +43,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricDto
-                { Time = (DateTime)(UNIX.AddSeconds(metric.Time.TotalSeconds)), Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(m.Map<NetworkMetricDto>(metric));
             }
 
             return Ok(response);
