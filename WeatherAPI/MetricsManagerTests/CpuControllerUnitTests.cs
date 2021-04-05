@@ -4,17 +4,19 @@ using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MetricsInfrastucture.Enums;
 using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MetricsManagerTests
 {
     public class CpuControllerUnitTests
     {
         private CpuMetricsController _controller;
-        private readonly ILogger<CpuMetricsController> _logger;
+        private readonly Mock<ILogger<CpuMetricsController>> _logger;
 
         public CpuControllerUnitTests()
         {
-            _controller = new CpuMetricsController(_logger);
+            _logger = new Mock<ILogger<CpuMetricsController>>();
+            _controller = new CpuMetricsController(_logger.Object);
         }
 
         [Fact]

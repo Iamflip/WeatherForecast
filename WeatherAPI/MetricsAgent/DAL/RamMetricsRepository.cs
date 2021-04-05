@@ -69,6 +69,14 @@ namespace MetricsAgent.DAL
             }
         }
 
+        public RamMetric GetLast()
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                return connection.QuerySingle<RamMetric>("SELECT * FROM rammetrics ORDER BY id DESC LIMIT 1");
+            }
+        }
+
         public void Update(RamMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))

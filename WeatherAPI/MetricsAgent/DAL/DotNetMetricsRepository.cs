@@ -68,6 +68,14 @@ namespace MetricsAgent.DAL
             }
         }
 
+        public DotNetMetric GetLast()
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                return connection.QuerySingle<DotNetMetric>("SELECT * FROM dotnetmetrics ORDER BY id DESC LIMIT 1");
+            }
+        }
+
         public void Update(DotNetMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))

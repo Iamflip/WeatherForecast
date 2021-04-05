@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Management;
+using MetricsAgent.Metric;
+using MetricsAgent.Responses;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers
 {
@@ -15,9 +18,11 @@ namespace MetricsAgent.Controllers
     public class RamMetricsController : ControllerBase
     {
         private readonly ILogger<RamMetricsController> _logger;
+        private IRepository<RamMetric> _repository;
 
-        public RamMetricsController (ILogger<RamMetricsController> logger)
+        public RamMetricsController (ILogger<RamMetricsController> logger, IRepository<RamMetric> repository)
         {
+            _repository = repository;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в RamMetricsController");
         }
@@ -25,17 +30,17 @@ namespace MetricsAgent.Controllers
         [HttpGet("available")]
         public IActionResult GetMetricsFromAgent()
         {
-            ManagementObjectSearcher ramMonitor =    //запрос к WMI для получения памяти ПК
-                        new ManagementObjectSearcher("SELECT FreePhysicalMemory FROM Win32_OperatingSystem");
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<RamMetric, RamMetricDto>());
+            var m = config.CreateMapper();
 
-            ulong freeRamMb = 0;
+            var metric = _repository.GetLast();
 
-            foreach (ManagementObject objram in ramMonitor.Get())
+            if (metric == null)
             {
-                freeRamMb = (Convert.ToUInt64(objram["FreePhysicalMemory"]) / 1024);
+                return Ok();
             }
 
-            return Ok(freeRamMb);
+            return Ok(m.Map<RamMetricDto>(metric));
         }
     }
 }

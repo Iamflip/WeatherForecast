@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using MetricsAgent.Metric;
+using AutoMapper;
+using MetricsAgent.Responses;
 
 namespace MetricsAgent.Controllers
 {
@@ -27,20 +29,17 @@ namespace MetricsAgent.Controllers
         [HttpGet("left")]
         public IActionResult GetMetricsFromAgent()
         {
-            double free = 0;
-            double freeMb = 0;
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<HddMetric, HddMetricDto>());
+            var m = config.CreateMapper();
 
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            foreach (DriveInfo MyDriveInfo in allDrives)
+            var metric = _repository.GetLast();
+
+            if (metric == null)
             {
-                if (MyDriveInfo.IsReady == true)
-                {
-                    free = MyDriveInfo.AvailableFreeSpace;
-                    freeMb = (free / 1024) / 1024;
-                }
+                return Ok();
             }
 
-            return Ok(freeMb);
+            return Ok(m.Map<HddMetricDto>(metric));
         }
     }
 }

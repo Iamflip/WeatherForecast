@@ -70,6 +70,14 @@ namespace MetricsAgent.DAL
             }
         }
 
+        public NetworkMetric GetLast()
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                return connection.QuerySingle<NetworkMetric>("SELECT * FROM networkmetrics ORDER BY id DESC LIMIT 1");
+            }
+        }
+
         public void Update(NetworkMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))

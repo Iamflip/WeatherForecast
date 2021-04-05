@@ -4,17 +4,19 @@ using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MetricsInfrastucture.Enums;
 using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MetricsManagerTests
 {
     public class RamControllerUnitTests
     {
         private RamMetricsController _controller;
-        private readonly ILogger<RamMetricsController> _logger;
+        private readonly Mock<ILogger<RamMetricsController>> _logger;
 
         public RamControllerUnitTests()
         {
-            _controller = new RamMetricsController(_logger);
+            _logger = new Mock<ILogger<RamMetricsController>>();
+            _controller = new RamMetricsController(_logger.Object);
         }
 
         [Fact]

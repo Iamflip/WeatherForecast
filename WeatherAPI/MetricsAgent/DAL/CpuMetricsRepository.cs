@@ -72,6 +72,14 @@ namespace MetricsAgent
             }
         }
 
+        public CpuMetric GetLast()
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                return connection.QuerySingle<CpuMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1");
+            }
+        }
+
         public void Update(CpuMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))

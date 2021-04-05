@@ -28,7 +28,7 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentileFromAgent([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime,
+        public IActionResult GetMetricsByPercentileFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime,
             [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime} {percentile}");
@@ -37,6 +37,11 @@ namespace MetricsAgent.Controllers
             var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
+
+            if (metrics == null)
+            {
+                return Ok();
+            }
 
             var response = new AllCpuMetricsResponse()
             {

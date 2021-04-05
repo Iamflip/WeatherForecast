@@ -4,17 +4,19 @@ using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MetricsInfrastucture.Enums;
 using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MetricsManagerTests
 {
     public class NetworkControllerUnitTests
     {
         private NetworkMetricsController _controller;
-        private readonly ILogger<NetworkMetricsController> _logger;
+        private readonly Mock<ILogger<NetworkMetricsController>> _logger;
 
         public NetworkControllerUnitTests()
         {
-            _controller = new NetworkMetricsController(_logger);
+            _logger = new Mock<ILogger<NetworkMetricsController>>();
+            _controller = new NetworkMetricsController(_logger.Object);
         }
 
         [Fact]

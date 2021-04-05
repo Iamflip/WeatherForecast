@@ -68,6 +68,14 @@ namespace MetricsAgent.DAL
             }
         }
 
+        public HddMetric GetLast()
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                return connection.QuerySingle<HddMetric>("SELECT * FROM hddmetrics ORDER BY id DESC LIMIT 1");
+            }
+        }
+
         public void Update(HddMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))

@@ -27,7 +27,7 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
+        public IActionResult GetMetricsFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime}");
 
@@ -35,6 +35,11 @@ namespace MetricsAgent.Controllers
             var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
+
+            if (metrics == null)
+            {
+                return Ok();
+            }
 
             var response = new AllDotNetMetricsResponse()
             {
