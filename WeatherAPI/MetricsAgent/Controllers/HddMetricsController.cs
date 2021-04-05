@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using MetricsAgent.Metric;
+using MetricsAgent.Responses;
 
 namespace MetricsAgent.Controllers
 {
@@ -16,6 +17,7 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<HddMetricsController> _logger;
         private IRepository<HddMetric> _repository;
+        private DateTime UNIX = new DateTime(1970, 01, 01);
 
         public HddMetricsController(ILogger<HddMetricsController> logger, IRepository<HddMetric> repository)
         {
@@ -27,20 +29,21 @@ namespace MetricsAgent.Controllers
         [HttpGet("left")]
         public IActionResult GetMetricsFromAgent()
         {
-            double free = 0;
-            double freeMb = 0;
+            var metric = _repository.GetLast();
 
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            foreach (DriveInfo MyDriveInfo in allDrives)
+            if (metric == null)
             {
-                if (MyDriveInfo.IsReady == true)
-                {
-                    free = MyDriveInfo.AvailableFreeSpace;
-                    freeMb = (free / 1024) / 1024;
-                }
+                return Ok();
             }
 
-            return Ok(freeMb);
+            var responce = new HddMetricDto
+            {
+                Id = metric.Id,
+                Value = metric.Value,
+                Time = UNIX.AddSeconds(metric.Time.TotalSeconds)
+            };
+
+            return Ok(responce);
         }
     }
 }

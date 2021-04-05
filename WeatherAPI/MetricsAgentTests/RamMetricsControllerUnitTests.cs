@@ -5,18 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using Xunit;
+using Moq;
 
 namespace MetricsAgentTests
 {
-    public class RamControllerUnitTests
+    public class RamMetricsControllerUnitTests
     {
         private RamMetricsController _controller;
-        private readonly ILogger<RamMetricsController> _logger;
-        private IRepository<RamMetric> _repository;
+        private readonly Mock<ILogger<RamMetricsController>> _logger;
+        private Mock<IRepository<RamMetric>> _mock;
 
-        public RamControllerUnitTests()
+        public RamMetricsControllerUnitTests()
         {
-            _controller = new RamMetricsController(_logger);
+            _mock = new Mock<IRepository<RamMetric>>();
+            _logger = new Mock<ILogger<RamMetricsController>>();
+            _controller = new RamMetricsController(_logger.Object, _mock.Object);
         }
 
         [Fact]

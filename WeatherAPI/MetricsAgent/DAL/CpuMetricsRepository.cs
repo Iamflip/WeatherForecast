@@ -126,6 +126,22 @@ namespace MetricsAgent
             return returnList;
         }
 
+        public CpuMetric GetLast()
+        {
+            using var cmd = new SQLiteCommand(_connection);
+            cmd.CommandText = "SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1;";
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                return new CpuMetric
+                {
+                    Id = reader.GetInt32(0),
+                    Value = reader.GetInt32(1),
+                    Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                };
+            }
+        }
+
         public void Update(CpuMetric item)
         {
             using var cmd = new SQLiteCommand(_connection);

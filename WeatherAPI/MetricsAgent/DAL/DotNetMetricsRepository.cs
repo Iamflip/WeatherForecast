@@ -126,6 +126,29 @@ namespace MetricsAgent.DAL
             return returnList;
         }
 
+        public DotNetMetric GetLast()
+        {
+            using var cmd = new SQLiteCommand(_connection);
+            cmd.CommandText = "SELECT * FROM dotnetmetrics ORDER BY id DESC LIMIT 1;";
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return new DotNetMetric
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public void Update(DotNetMetric item)
         {
             using var cmd = new SQLiteCommand(_connection);

@@ -18,5 +18,6 @@ namespace MetricsAgent
         void Update(T item);
 
         void Delete(int id);
+        T GetLast();
     }
 }

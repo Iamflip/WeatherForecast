@@ -26,29 +26,29 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
 
-        public CpuMetricsController(IRepository<CpuMetric> repository)
-        {
-            _repository = repository;
-        }
-
-        [HttpGet("read")]
-        public IActionResult Read()
-        {
-            return Ok();
-        }
-
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentileFromAgent([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime,
+        public IActionResult GetMetricsByPercentileFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime,
             [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime} {percentile}");
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
+            if (metrics == null)
+            {
+                return Ok();
+            }
+
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()
             };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new CpuMetricDto
+                { Time = UNIX.AddSeconds(metric.Time.TotalSeconds), Value = metric.Value, Id = metric.Id });
+            }
 
             metrics = SortAndDeleteForPercentile(metrics, percentile);
 
@@ -75,7 +75,7 @@ namespace MetricsAgent.Controllers
             foreach (var metric in metrics)
             {
                 response.Metrics.Add(new CpuMetricDto
-                { Time = (DateTime)(UNIX.AddSeconds(metric.Time.TotalSeconds)), Value = metric.Value, Id = metric.Id });
+                { Time = UNIX.AddSeconds(metric.Time.TotalSeconds), Value = metric.Value, Id = metric.Id });
             }
 
             return Ok(response);

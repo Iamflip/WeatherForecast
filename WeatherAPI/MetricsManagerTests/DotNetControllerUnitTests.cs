@@ -4,17 +4,19 @@ using MetricsManager.Controllers;
 using MetricsInfrastucture.Enums;
 using Xunit;
 using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MetricsManagerTests
 {
     public class DotNetControllerUnitTests
     {
         private DotNetMetricsController _controller;
-        private readonly ILogger<DotNetMetricsController> _logger;
+        private readonly Mock<ILogger<DotNetMetricsController>> _logger;
 
         public DotNetControllerUnitTests()
         {
-            _controller = new DotNetMetricsController(_logger);
+            _logger = new Mock<ILogger<DotNetMetricsController>>();
+            _controller = new DotNetMetricsController(_logger.Object);
         }
 
         [Fact]

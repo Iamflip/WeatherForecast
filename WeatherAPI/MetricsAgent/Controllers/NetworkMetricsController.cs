@@ -26,11 +26,16 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
+        public IActionResult GetMetricsFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime}");
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
+
+            if (metrics == null)
+            {
+                return Ok();
+            }
 
             var response = new AllNetworkMetricsResponce()
             {
@@ -40,7 +45,7 @@ namespace MetricsAgent.Controllers
             foreach (var metric in metrics)
             {
                 response.Metrics.Add(new NetworkMetricDto
-                { Time = (DateTime)(UNIX.AddSeconds(metric.Time.TotalSeconds)), Value = metric.Value, Id = metric.Id });
+                { Time = UNIX.AddSeconds(metric.Time.TotalSeconds), Value = metric.Value, Id = metric.Id });
             }
 
             return Ok(response);

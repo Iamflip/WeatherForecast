@@ -4,17 +4,19 @@ using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MetricsInfrastucture.Enums;
 using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MetricsManagerTests
 {
     public class HddControllerUnitTests
     {
         private HddMetricsController _controller;
-        private readonly ILogger<HddMetricsController> _logger;
+        private readonly Mock<ILogger<HddMetricsController>> _logger;
 
         public HddControllerUnitTests()
         {
-            _controller = new HddMetricsController(_logger);
+            _logger = new Mock<ILogger<HddMetricsController>>();
+            _controller = new HddMetricsController(_logger.Object);
         }
 
         [Fact]
