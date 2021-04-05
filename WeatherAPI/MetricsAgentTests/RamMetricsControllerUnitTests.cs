@@ -25,9 +25,11 @@ namespace MetricsAgentTests
         [Fact]
         public void GetMetricsFromAgent_ReturnsOk()
         {
+            _mock.Setup(repository => repository.GetLast());
+
             var result = _controller.GetMetricsFromAgent();
 
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mock.Verify(repository => repository.GetLast(), Times.AtMostOnce());
         }
     }
 }
