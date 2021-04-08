@@ -18,12 +18,15 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<CpuMetricsController> _logger;
         private IRepository<CpuMetric> _repository;
-        private DateTime _UNIX = new DateTime(1970, 01, 01);
+        private readonly IMapper _mapper;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger, IRepository<CpuMetric> repository)
+        private DateTimeOffset _UNIX = new DateTime(1970, 01, 01);
+
+        public CpuMetricsController(ILogger<CpuMetricsController> logger, IRepository<CpuMetric> repository, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
 
@@ -32,9 +35,6 @@ namespace MetricsAgent.Controllers
             [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime} {percentile}");
-
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<CpuMetric, CpuMetricDto>());
-            var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
@@ -52,7 +52,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(m.Map<CpuMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
 
             return Ok($"По перцентилю {percentile} нагрузка не превышает {metrics.Max(metric => metric.Value)}%");
@@ -62,9 +62,6 @@ namespace MetricsAgent.Controllers
         public IActionResult GetMetricsFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime}");
-
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<CpuMetric, CpuMetricDto>());
-            var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
@@ -80,7 +77,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(m.Map<CpuMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
 
             return Ok(response);

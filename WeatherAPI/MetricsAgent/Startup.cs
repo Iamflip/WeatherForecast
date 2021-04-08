@@ -1,19 +1,13 @@
+using AutoMapper;
 using MetricsAgent.DAL;
 using MetricsAgent.Metric;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsAgent
 {
@@ -36,6 +30,10 @@ namespace MetricsAgent
             services.AddScoped<IRepository<HddMetric>, HddMetricsRepository>();
             services.AddScoped<IRepository<NetworkMetric>, NetworkMetricsRepository>();
             services.AddScoped<IRepository<RamMetric>, RamMetricsRepository>();
+
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddSwaggerGen(c =>
             {

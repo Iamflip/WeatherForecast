@@ -19,9 +19,11 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<RamMetricsController> _logger;
         private IRepository<RamMetric> _repository;
+        private readonly IMapper _mapper;
 
-        public RamMetricsController (ILogger<RamMetricsController> logger, IRepository<RamMetric> repository)
+        public RamMetricsController (ILogger<RamMetricsController> logger, IRepository<RamMetric> repository, IMapper mapper)
         {
+            _mapper = mapper;
             _repository = repository;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в RamMetricsController");
@@ -30,9 +32,6 @@ namespace MetricsAgent.Controllers
         [HttpGet("available")]
         public IActionResult GetMetricsFromAgent()
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<RamMetric, RamMetricDto>());
-            var m = config.CreateMapper();
-
             var metric = _repository.GetLast();
 
             if (metric == null)
@@ -40,7 +39,7 @@ namespace MetricsAgent.Controllers
                 return Ok();
             }
 
-            return Ok(m.Map<RamMetricDto>(metric));
+            return Ok(_mapper.Map<RamMetricDto>(metric));
         }
     }
 }

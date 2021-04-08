@@ -6,6 +6,7 @@ using MetricsInfrastucture.Enums;
 using Moq;
 using MetricsAgent;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace MetricsAgentTests
 {
@@ -14,12 +15,14 @@ namespace MetricsAgentTests
         private CpuMetricsController _controller;
         private Mock<IRepository<CpuMetric>> _mock;
         private Mock<ILogger<CpuMetricsController>> _logger;
+        private Mock<IMapper> _mapper;
 
         public CpuMetricsControllerUnitTests()
         {
             _mock = new Mock<IRepository<CpuMetric>>();
             _logger = new Mock<ILogger<CpuMetricsController>>();
-            _controller = new CpuMetricsController(_logger.Object, _mock.Object);
+            _mapper = new Mock<IMapper>();
+            _controller = new CpuMetricsController(_logger.Object, _mock.Object, _mapper.Object);
         }
 
         [Fact]
