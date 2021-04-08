@@ -9,13 +9,13 @@ namespace MetricsAgent.Jobs
 {
     public class CpuMetricJob : IJob
     {
-        private CpuMetricsRepository _repository;
+        private IRepository<CpuMetric> _repository;
 
         private PerformanceCounter _cpuCounter;
 
-        public CpuMetricJob()
+        public CpuMetricJob(IRepository<CpuMetric> repository)
         {
-            _repository = new CpuMetricsRepository();
+            _repository = repository;
             _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
         }
 

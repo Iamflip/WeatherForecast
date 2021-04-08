@@ -10,13 +10,13 @@ namespace MetricsAgent.Jobs
 {
     public class HddMetricJob : IJob
     {
-        private HddMetricsRepository _repository;
+        private IRepository<HddMetric> _repository;
 
         private PerformanceCounter _hddCounter;
 
-        public HddMetricJob()
+        public HddMetricJob(IRepository<HddMetric> repository)
         {
-            _repository = new HddMetricsRepository();
+            _repository = repository;
             _hddCounter = new PerformanceCounter("LogicalDisk", "Free Megabytes", "_Total");
         }
 

@@ -1,4 +1,5 @@
-﻿using MetricsAgent;
+﻿using AutoMapper;
+using MetricsAgent;
 using MetricsAgent.Controllers;
 using MetricsAgent.Metric;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,14 @@ namespace MetricsAgentTests
         private NetworkMetricsController _controller;
         private readonly Mock<ILogger<NetworkMetricsController>> _logger;
         private Mock<IRepository<NetworkMetric>> _mock;
+        private Mock<IMapper> _mapper;
 
         public NetworkMetricsControllerUnitTests()
         {
             _mock = new Mock<IRepository<NetworkMetric>>();
             _logger = new Mock<ILogger<NetworkMetricsController>>();
-            _controller = new NetworkMetricsController(_logger.Object, _mock.Object);
+            _mapper = new Mock<IMapper>();
+            _controller = new NetworkMetricsController(_logger.Object, _mock.Object, _mapper.Object);
         }
 
         [Fact]

@@ -10,13 +10,13 @@ namespace MetricsAgent.Jobs
 {
     public class RamMetricJob : IJob
     {
-        private RamMetricsRepository _repository;
+        private IRepository<RamMetric> _repository;
 
         private PerformanceCounter _ramCounter;
 
-        public RamMetricJob()
+        public RamMetricJob(IRepository<RamMetric> repository)
         {
-            _repository = new RamMetricsRepository();
+            _repository = repository;
             _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
         }
 

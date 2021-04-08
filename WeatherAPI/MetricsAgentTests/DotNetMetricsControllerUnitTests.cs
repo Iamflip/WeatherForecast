@@ -1,4 +1,5 @@
-﻿using MetricsAgent;
+﻿using AutoMapper;
+using MetricsAgent;
 using MetricsAgent.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,12 +14,14 @@ namespace MetricsAgentTests
         private DotNetMetricsController _controller;
         private Mock<ILogger<DotNetMetricsController>> _logger;
         private Mock<IRepository<DotNetMetric>> _mock;
+        private Mock<IMapper> _mapper;
 
         public DotNetMetricsControllerUnitTests()
         {
             _logger = new Mock<ILogger<DotNetMetricsController>>();
             _mock = new Mock<IRepository<DotNetMetric>>();
-            _controller = new DotNetMetricsController(_logger.Object, _mock.Object);
+            _mapper = new Mock<IMapper>();
+            _controller = new DotNetMetricsController(_logger.Object, _mock.Object, _mapper.Object);
         }
 
         [Fact]

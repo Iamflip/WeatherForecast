@@ -11,13 +11,13 @@ namespace MetricsAgent.Jobs
 {
     public class NetworkMetricJob : IJob
     {
-        private NetworkMetricsRepository _repository;
+        private IRepository<NetworkMetric> _repository;
 
         private PerformanceCounter _networkCounter;
 
-        public NetworkMetricJob()
+        public NetworkMetricJob(IRepository<NetworkMetric> repository)
         {
-            _repository = new NetworkMetricsRepository();
+            _repository = repository;
         }
 
         public Task Execute(IJobExecutionContext context)

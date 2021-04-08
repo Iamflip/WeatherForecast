@@ -10,13 +10,13 @@ namespace MetricsAgent.Jobs
 {
     public class DotNetMetricJob : IJob
     {
-        private DotNetMetricsRepository _repository;
+        private IRepository<DotNetMetric> _repository;
 
         private PerformanceCounter _dotnetCounter;
 
-        public DotNetMetricJob()
+        public DotNetMetricJob(IRepository<DotNetMetric> repository)
         {
-            _repository = new DotNetMetricsRepository();
+            _repository = repository;
             _dotnetCounter = new PerformanceCounter(".NET CLR Memory", "% Time in GC", "_Global_");
         }
 

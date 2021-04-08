@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsAgent.DAL;
 using MetricsAgent.Jobs;
@@ -36,6 +37,10 @@ namespace MetricsAgent
             services.AddSingleton<IRepository<HddMetric>, HddMetricsRepository>();
             services.AddSingleton<IRepository<NetworkMetric>, NetworkMetricsRepository>();
             services.AddSingleton<IRepository<RamMetric>, RamMetricsRepository>();
+
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddFluentMigratorCore()
                .ConfigureRunner(rb => rb

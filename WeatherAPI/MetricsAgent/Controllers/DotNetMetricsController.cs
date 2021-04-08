@@ -17,10 +17,11 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<DotNetMetricsController> _logger;
         private IRepository<DotNetMetric> _repository;
-        private DateTime _UNIX = new DateTime(1970, 01, 01);
+        private IMapper _mapper;
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger, IRepository<DotNetMetric> repository)
+        public DotNetMetricsController(ILogger<DotNetMetricsController> logger, IRepository<DotNetMetric> repository, IMapper mapper)
         {
+            _mapper = mapper;
             _repository = repository;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
@@ -30,9 +31,6 @@ namespace MetricsAgent.Controllers
         public IActionResult GetMetricsFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Входные данные {fromTime} {toTime}");
-
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<DotNetMetric, DotNetMetricDto>());
-            var m = config.CreateMapper();
 
             var metrics = _repository.GetFromTo(fromTime, toTime);
 
@@ -48,7 +46,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(m.Map<DotNetMetricDto>(metric));
+                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
             }
 
             return Ok(response);

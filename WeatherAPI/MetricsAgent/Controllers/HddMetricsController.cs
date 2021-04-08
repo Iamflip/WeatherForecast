@@ -18,9 +18,11 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<HddMetricsController> _logger;
         private IRepository<HddMetric> _repository;
+        private IMapper _mapper;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger, IRepository<HddMetric> repository)
+        public HddMetricsController(ILogger<HddMetricsController> logger, IRepository<HddMetric> repository, IMapper mapper)
         {
+            _mapper = mapper;
             _repository = repository;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в HddMetricsController");
@@ -29,9 +31,6 @@ namespace MetricsAgent.Controllers
         [HttpGet("left")]
         public IActionResult GetMetricsFromAgent()
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<HddMetric, HddMetricDto>());
-            var m = config.CreateMapper();
-
             var metric = _repository.GetLast();
 
             if (metric == null)
@@ -39,7 +38,7 @@ namespace MetricsAgent.Controllers
                 return Ok();
             }
 
-            return Ok(m.Map<HddMetricDto>(metric));
+            return Ok(_mapper.Map<HddMetricDto>(metric));
         }
     }
 }
