@@ -30,6 +30,12 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
 
+        [HttpGet("read")]
+        public void Test()
+        {
+
+        }
+
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
         public IActionResult GetMetricsByPercentileFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime,
             [FromRoute] Percentile percentile)
