@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.DAL;
+using MetricsInfrastucture.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using System;

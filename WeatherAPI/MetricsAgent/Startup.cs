@@ -13,6 +13,8 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 using System.Data.SQLite;
+using MetricsInfrastucture;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgent
 {

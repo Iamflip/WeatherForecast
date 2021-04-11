@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsInfrastucture.Interfaces;
+using MetricsManager.Models;
+using MetricsManager.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,9 +17,13 @@ namespace MetricsManager.Controllers
     public class AgentsController : ControllerBase
     {
         private readonly ILogger<AgentsController> _logger;
+        private IAgentsRepository<AgentInfo> _agent;
+        private IMapper _mapper;
 
-        public AgentsController(ILogger<AgentsController> logger)
+        public AgentsController(ILogger<AgentsController> logger, IAgentsRepository<AgentInfo> agent, IMapper mapper)
         {
+            _mapper = mapper;
+            _agent = agent;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в AgentsController");
         }
@@ -42,9 +50,26 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("read")]
-        public IActionResult ReadRegisteredAgents()//Нужно добавить список который будет сохранять зарегестрированные агенты и в данном методе выводить их
+        public IActionResult ReadRegisteredAgents()
         {
-            return Ok();
+            IList<AgentInfo> agents = _agent.GetAll();
+
+            if (agents == null)
+            {
+                return Ok();
+            }
+
+            var response = new AllAgentsResponce()
+            {
+                Agents = new List<AgentDto>()
+            };
+
+            foreach (var agent in agents)
+            {
+                response.Agents.Add(_mapper.Map<AgentDto>(agent));
+            }
+
+            return Ok(response);
         }
     }
 }

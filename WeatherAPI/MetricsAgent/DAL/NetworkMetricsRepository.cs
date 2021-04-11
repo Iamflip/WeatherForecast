@@ -5,6 +5,8 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using MetricsInfrastucture.Interfaces;
+using MetricsInfrastucture.Handlers;
 
 namespace MetricsAgent.DAL
 {
@@ -31,32 +33,6 @@ namespace MetricsAgent.DAL
             }
         }
 
-        public void Delete(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                connection.Execute("DELETE FROM networkmetrics WHERE id = @id",
-                    new { id = id });
-            }
-        }
-
-        public IList<NetworkMetric> GetAll()
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.Query<NetworkMetric>("SELECT * FROM networkmetrics").ToList();
-            }
-        }
-
-        public NetworkMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.QuerySingle<NetworkMetric>("SELECT * FROM networkmetrics WHERE id = @id",
-                    new { id = id });
-            }
-        }
-
         public IList<NetworkMetric> GetFromTo(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
@@ -75,20 +51,6 @@ namespace MetricsAgent.DAL
             using (var connection = new SQLiteConnection(ConnectionString))
             {
                 return connection.QuerySingle<NetworkMetric>("SELECT * FROM networkmetrics ORDER BY id DESC LIMIT 1");
-            }
-        }
-
-        public void Update(NetworkMetric item)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                connection.Execute("UPDATE networkmetrics SET value = @value, time = @time WHERE id = @id",
-                    new
-                    {
-                        value = item.Value,
-                        time = item.Time.TotalSeconds,
-                        id = item.Id
-                    });
             }
         }
     }

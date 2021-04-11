@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MetricsAgent;
 using MetricsAgent.Controllers;
+using MetricsInfrastucture.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -29,10 +30,8 @@ namespace MetricsAgentTests
         {
             _mock.Setup(repository => repository.GetFromTo(It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>())).Verifiable();
 
-            DateTime d1 = new DateTime(2011, 10, 10);
-            DateTime d2 = new DateTime(2011, 11, 11);
-            DateTimeOffset fromTime = new DateTimeOffset(d1);
-            DateTimeOffset toTime = new DateTimeOffset(d2);
+            DateTimeOffset fromTime = new DateTime(2011, 10, 10);
+            DateTimeOffset toTime = new DateTime(2011, 11, 11);
 
             var result = _controller.GetMetricsFromAgent(fromTime, toTime);
 
