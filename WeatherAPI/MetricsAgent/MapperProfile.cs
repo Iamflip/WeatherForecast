@@ -7,17 +7,18 @@ namespace MetricsAgent
 {
     public class MapperProfile : Profile
     {
-        private DateTimeOffset _UNIX = new DateTime(1970, 01, 01);
         public MapperProfile()
         {
-            CreateMap<CpuMetric, CpuMetricDto>()
-                .ForMember("Time", opt => opt.MapFrom(c => _UNIX.AddSeconds(c.Time.TotalSeconds)));
-            CreateMap<DotNetMetric, DotNetMetricDto>()
-                .ForMember("Time", opt => opt.MapFrom(c => _UNIX.AddSeconds(c.Time.TotalSeconds)));
-            CreateMap<HddMetric, HddMetricDto>();
-            CreateMap<NetworkMetric, NetworkMetricDto>()
-                .ForMember("Time", opt => opt.MapFrom(c => _UNIX.AddSeconds(c.Time.TotalSeconds)));
-            CreateMap<RamMetric, RamMetricDto>();
+            CreateMap<CpuMetricDto, CpuMetric>()
+                .ForMember(dbModel => dbModel.Time, _ => _.MapFrom((src, dst) => src.Time.ToUnixTimeSeconds()));
+            CreateMap<DotNetMetricDto, DotNetMetric>()
+                .ForMember(dbModel => dbModel.Time, _ => _.MapFrom((src, dst) => src.Time.ToUnixTimeSeconds()));
+            CreateMap<NetworkMetricDto, NetworkMetric>()
+                .ForMember(dbModel => dbModel.Time, _ => _.MapFrom((src, dst) => src.Time.ToUnixTimeSeconds()));
+            CreateMap<HddMetricDto, HddMetric>()
+                .ForMember(dbModel => dbModel.Time, _ => _.MapFrom((src, dst) => src.Time.ToUnixTimeSeconds()));
+            CreateMap<RamMetricDto, RamMetricDto>()
+                .ForMember(dbModel => dbModel.Time, _ => _.MapFrom((src, dst) => src.Time.ToUnixTimeSeconds()));
         }
     }
 }
