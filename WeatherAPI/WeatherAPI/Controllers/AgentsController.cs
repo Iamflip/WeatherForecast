@@ -2,13 +2,9 @@
 using MetricsInfrastucture.Interfaces;
 using MetricsManager.Models;
 using MetricsManager.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -31,8 +27,15 @@ namespace MetricsManager.Controllers
         [HttpPost("register")]
         public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
         {
-            _logger.LogInformation($"Входные данные: {agentInfo}");
-            return Ok();
+            try
+            {
+                _agent.Create(agentInfo);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("enable/{agentId}")]

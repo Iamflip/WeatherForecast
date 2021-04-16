@@ -64,7 +64,49 @@ namespace MetricsManager.DAL
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                return connection.QuerySingle<RamMetric>("SELECT * FROM rammetrics ORDER BY id DESC LIMIT 1");
+                var result = connection.QuerySingle<RamMetric>("SELECT * FROM rammetrics ORDER BY id DESC LIMIT 1");
+
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new RamMetric
+                    {
+                        AgentId = 0,
+                        Id = 0,
+                        Value = 0,
+                        Time = TimeSpan.FromSeconds(0)
+                    };
+                }
+            }
+        }
+
+        public RamMetric GetLastFromAgent(int agentId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                var result = connection.QuerySingle<RamMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1 WHERE agentid = @agentid",
+                    new
+                    {
+                        agentid = agentId
+                    });
+
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new RamMetric
+                    {
+                        AgentId = 0,
+                        Id = 0,
+                        Value = 0,
+                        Time = TimeSpan.FromSeconds(0)
+                    };
+                }
             }
         }
     }

@@ -36,7 +36,20 @@ namespace MetricsManager.DAL
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                return connection.QuerySingle<AgentInfo>("SELECT * FROM agents ORDER BY id DESC LIMIT 1");
+                var result = connection.QuerySingle<AgentInfo>("SELECT * FROM agents ORDER BY id DESC LIMIT 1");
+
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new AgentInfo
+                    {
+                        AgentId = 0,
+                        AgentAddress = @"http://localhost:5000"
+                    };
+                }
             }
         }
     }

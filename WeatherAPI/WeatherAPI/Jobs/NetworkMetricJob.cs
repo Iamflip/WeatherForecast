@@ -14,7 +14,6 @@ namespace MetricsManager.Jobs
         private IRepositoryMM<NetworkMetric> _metricRepository;
         private IAgentsRepository<AgentInfo> _agentRepository;
         private IMetricsAgentClient _client;
-        private DateTimeOffset _UNIX = new DateTime(1970, 01, 01);
         public NetworkMetricJob(IRepositoryMM<NetworkMetric> metricRepository, IAgentsRepository<AgentInfo> agentsRepository, IMetricsAgentClient client)
         {
             _metricRepository = metricRepository;
@@ -24,33 +23,39 @@ namespace MetricsManager.Jobs
         public Task Execute(IJobExecutionContext context)
         {
             IList<AgentInfo> agents = _agentRepository.GetAll();
-            var last = _UNIX.AddSeconds(_metricRepository.GetLast().Time.TotalSeconds);
+
+            List<DateTimeOffset> last = new List<DateTimeOffset>();
 
             for (int i = 0; i < agents.Count; i++)
             {
-                var temp = new GetAllNetworkMetricsApiRequest();
+                last.Add(DateTimeOffset.FromUnixTimeSeconds((long)_metricRepository.GetLastFromAgent(agents[i].AgentId).Time.TotalSeconds));
+            }
 
-                temp.ClientBaseAddress = agents[i].AgentAddress.ToString();
-                if (last > _UNIX)
+            for (int i = 0; i < agents.Count; i++)
+            {
+                var request = new GetAllNetworkMetricsApiRequest();
+
+                request.ClientBaseAddress = agents[i].AgentAddress;
+                if (last[i] > DateTimeOffset.UnixEpoch)
                 {
-                    temp.FromTime = last;
+                    request.FromTime = last[i];
                 }
                 else
                 {
-                    temp.FromTime = _UNIX;
+                    request.FromTime = DateTimeOffset.UnixEpoch;
                 }
-                temp.ToTime = DateTimeOffset.UtcNow;
+                request.ToTime = DateTimeOffset.UtcNow;
 
 
-                var result = _client.GetFromToNetworkMetrics(temp);
+                var result = _client.GetFromToNetworkMetrics(request);
 
                 for (int j = 0; j < result.Metrics.Count; j++)
                 {
                     _metricRepository.Create(new NetworkMetric
                     {
-                        AgentId = result.Metrics[i].AgentId,
-                        Value = result.Metrics[i].Value,
-                        Time = TimeSpan.FromSeconds(result.Metrics[i].Time.ToUnixTimeSeconds())
+                        AgentId = result.Metrics[j].AgentId,
+                        Value = result.Metrics[j].Value,
+                        Time = TimeSpan.FromSeconds(result.Metrics[j].Time.ToUnixTimeSeconds())
                     });
                 }
             }

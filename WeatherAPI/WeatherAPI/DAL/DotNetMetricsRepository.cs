@@ -63,7 +63,49 @@ namespace MetricsManager.DAL
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                return connection.QuerySingle<DotNetMetric>("SELECT * FROM dotnetmetrics ORDER BY id DESC LIMIT 1");
+                var result = connection.QuerySingle<DotNetMetric>("SELECT * FROM dotnetmetrics ORDER BY id DESC LIMIT 1");
+
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new DotNetMetric
+                    {
+                        AgentId = 0,
+                        Id = 0,
+                        Value = 0,
+                        Time = TimeSpan.FromSeconds(0)
+                    };
+            }
+        }
+        }
+
+        public DotNetMetric GetLastFromAgent(int agentId)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                var result = connection.QuerySingle<DotNetMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1 WHERE agentid = @agentid",
+                    new
+                    {
+                        agentid = agentId
+                    });
+
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new DotNetMetric
+                    {
+                        AgentId = 0,
+                        Id = 0,
+                        Value = 0,
+                        Time = TimeSpan.FromSeconds(0)
+                    };
+                }
             }
         }
     }
