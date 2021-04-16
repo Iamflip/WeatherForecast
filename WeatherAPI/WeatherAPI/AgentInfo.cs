@@ -9,6 +9,6 @@ namespace MetricsManager
     {
         public int AgentId { get; set; }
 
-        public string AgentAddress { get; set; }
+        public string AgentURL { get; set; }
     }
 }

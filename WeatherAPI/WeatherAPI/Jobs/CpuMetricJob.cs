@@ -9,6 +9,7 @@ using MetricsManager.Request;
 
 namespace MetricsManager.Jobs
 {
+    [DisallowConcurrentExecution]
     public class CpuMetricJob : IJob
     {
         private IRepositoryMM<CpuMetric> _metricRepository;
@@ -28,14 +29,21 @@ namespace MetricsManager.Jobs
 
             for (int i = 0; i < agents.Count; i++)
             {
-                last.Add(DateTimeOffset.FromUnixTimeSeconds((long)_metricRepository.GetLastFromAgent(agents[i].AgentId).Time.TotalSeconds));
+                if (_metricRepository.GetLastFromAgent(agents[i].AgentId) == null)
+                {
+                    last.Add(DateTimeOffset.UnixEpoch);
+                }
+                else
+                {
+                    last.Add(DateTimeOffset.FromUnixTimeSeconds((long)_metricRepository.GetLastFromAgent(agents[i].AgentId).Time.TotalSeconds));
+                }
             }
 
             for (int i = 0; i < agents.Count; i++)
             {
                 var request = new GetAllCpuMetricsApiRequest();
 
-                request.ClientBaseAddress = agents[i].AgentAddress;
+                request.ClientBaseAddress = agents[i].AgentURL;
                 if (last[i] > DateTimeOffset.UnixEpoch)
                 {
                     request.FromTime = last[i];
@@ -52,7 +60,7 @@ namespace MetricsManager.Jobs
                 {
                     _metricRepository.Create(new CpuMetric
                     {
-                        AgentId = result.Metrics[j].AgentId,
+                        AgentId = agents[i].AgentId,
                         Value = result.Metrics[j].Value,
                         Time = TimeSpan.FromSeconds(result.Metrics[j].Time.ToUnixTimeSeconds())
                     });

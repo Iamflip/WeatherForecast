@@ -3,6 +3,7 @@ using MetricsManager.Responses;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -25,7 +26,7 @@ namespace MetricsManager.Client
             var fromParameter = request.FromTime;
             var toParameter = request.ToTime;
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get,$"{request.ClientBaseAddress}/api/hddmetrics/from/{fromParameter}/to/{toParameter}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get,$"{request.ClientBaseAddress}/api/metrics/hdd/from/{fromParameter}/to/{toParameter}");
 
             try
             {
@@ -45,7 +46,7 @@ namespace MetricsManager.Client
             var fromParameter = request.FromTime;
             var toParameter = request.ToTime;
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/rammetrics/from/{fromParameter}/to/{toParameter}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/metrics/ram/from/{fromParameter}/to/{toParameter}");
 
             try
             {
@@ -65,12 +66,17 @@ namespace MetricsManager.Client
             var fromParameter = request.FromTime;
             var toParameter = request.ToTime;
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/cpumetrics/from/{fromParameter}/to/{toParameter}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, ($"{request.ClientBaseAddress}/api/metrics/cpu/from/{fromParameter}/to/{toParameter}"));
 
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
+
+                //using var str = new StreamReader(responseStream);
+                //var content = str.ReadToEnd();
+                
+
                 return JsonSerializer.DeserializeAsync<AllCpuMetricsApiResponse>(responseStream).Result;
             }
             catch (Exception ex)
@@ -85,7 +91,7 @@ namespace MetricsManager.Client
             var fromParameter = request.FromTime;
             var toParameter = request.ToTime;
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/dotnetmetrics/from/{fromParameter}/to/{toParameter}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/metrics/dotnet/from/{fromParameter}/to/{toParameter}");
 
             try
             {
@@ -105,7 +111,7 @@ namespace MetricsManager.Client
             var fromParameter = request.FromTime;
             var toParameter = request.ToTime;
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/networkmetrics/from/{fromParameter}/to/{toParameter}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.ClientBaseAddress}/api/metrics/network/from/{fromParameter}/to/{toParameter}");
 
             try
             {

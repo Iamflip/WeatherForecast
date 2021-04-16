@@ -30,7 +30,7 @@ namespace MetricsAgent.Jobs
 
             // теперь можно записать что-то при помощи репозитория
 
-            _repository.Create(new CpuMetric { Time = time, Value = cpuUsageInPercents });
+            _repository.Create(new CpuMetric {Id = 1, Time = time, Value = cpuUsageInPercents });
 
             return Task.CompletedTask;
         }

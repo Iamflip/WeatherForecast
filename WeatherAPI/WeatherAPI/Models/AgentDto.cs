@@ -7,7 +7,7 @@ namespace MetricsManager.Models
 {
     public class AgentDto
     {
-        public int agentId { get; set; }
-        public string AgentAddress { get; set; }
+        public int AgentId { get; set; }
+        public string AgentURL { get; set; }
     }
 }

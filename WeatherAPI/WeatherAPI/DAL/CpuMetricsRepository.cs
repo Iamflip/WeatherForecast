@@ -63,48 +63,56 @@ namespace MetricsManager.DAL
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                var result = connection.QuerySingle<CpuMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1");
+                //var result = connection.QuerySingle<CpuMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1");
 
-                if (result != null)
+                //if (result != null)
+                //{
+                //    return result;
+                //}
+                //else
+                //{
+                //    return new CpuMetric
+                //    {
+                //        //AgentId = 0,
+                //        Id = 0,
+                //        Value = 0,
+                //        Time = TimeSpan.FromSeconds(0)
+                //    };
+                //}
+                try
                 {
-                    return result;
+                    return connection.QuerySingle<CpuMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1");
                 }
-                else
+                catch 
                 {
-                    return new CpuMetric
-                    {
-                        AgentId = 0,
-                        Id = 0,
-                        Value = 0,
-                        Time = TimeSpan.FromSeconds(0)
-                    };
+                    return null;
                 }
             }
         }
 
         public CpuMetric GetLastFromAgent(int agentId)
         {
+
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                var result = connection.QuerySingle<CpuMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1 WHERE agentid = @agentid",
-                    new
-                    {
-                        agentid = agentId
-                    });
-
-                if (result != null)
+                try
                 {
-                    return result;
+                    return connection.QuerySingle<CpuMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1 WHERE agentid = @agentid",
+                        new
+                        {
+                            agentid = agentId
+                        });
                 }
-                else
+                catch 
                 {
-                    return new CpuMetric
-                    {
-                        AgentId = 0,
-                        Id = 0,
-                        Value = 0,
-                        Time = TimeSpan.FromSeconds(0)
-                    };
+                    //return new CpuMetric
+                    //{
+                    //    //AgentId = 0,
+                    //    Id = 0,
+                    //    Value = 0,
+                    //    Time = TimeSpan.FromSeconds(0)
+                    //};
+                    return null;
                 }
             }
         }

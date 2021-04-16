@@ -64,21 +64,13 @@ namespace MetricsManager.DAL
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                var result = connection.QuerySingle<HddMetric>("SELECT * FROM hddmetrics ORDER BY id DESC LIMIT 1");
-
-                if (result != null)
+                try
                 {
-                    return result;
+                    return connection.QuerySingle<HddMetric>("SELECT * FROM hddmetrics ORDER BY id DESC LIMIT 1");
                 }
-                else
+                catch
                 {
-                    return new HddMetric
-                    {
-                        AgentId = 0,
-                        Id = 0,
-                        Value = 0,
-                        Time = TimeSpan.FromSeconds(0)
-                    };
+                    return null;
                 }
             }
         }
@@ -87,25 +79,17 @@ namespace MetricsManager.DAL
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                var result = connection.QuerySingle<HddMetric>("SELECT * FROM cpumetrics ORDER BY id DESC LIMIT 1 WHERE agentid = @agentid",
-                    new
-                    {
-                        agentid = agentId
-                    });
-
-                if (result != null)
+                try
                 {
-                    return result;
+                    return connection.QuerySingle<HddMetric>("SELECT * FROM hddmetrics ORDER BY id DESC LIMIT 1 WHERE agentid = @agentid",
+                        new
+                        {
+                            agentid = agentId
+                        });
                 }
-                else
+                catch
                 {
-                    return new HddMetric
-                    {
-                        AgentId = 0,
-                        Id = 0,
-                        Value = 0,
-                        Time = TimeSpan.FromSeconds(0)
-                    };
+                    return null;
                 }
             }
         }

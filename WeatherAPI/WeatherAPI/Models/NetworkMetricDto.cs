@@ -7,7 +7,7 @@ namespace MetricsManager.Models
 {
     public class NetworkMetricDto
     {
-        public int AgentId { get; set; }
+        //public int AgentId { get; set; }
         public DateTimeOffset Time { get; set; }
         public int Value { get; set; }
         public int Id { get; set; }

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Dapper;
 using MetricsInfrastucture.Interfaces;
 using MetricsManager.Models;
 using MetricsManager.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Linq;
 
 namespace MetricsManager.Controllers
 {
@@ -15,6 +18,7 @@ namespace MetricsManager.Controllers
         private readonly ILogger<AgentsController> _logger;
         private IAgentsRepository<AgentInfo> _agent;
         private IMapper _mapper;
+        private const string ConnectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
 
         public AgentsController(ILogger<AgentsController> logger, IAgentsRepository<AgentInfo> agent, IMapper mapper)
         {
@@ -26,7 +30,7 @@ namespace MetricsManager.Controllers
 
         [HttpPost("register")]
         public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
-        {
+        {  
             try
             {
                 _agent.Create(agentInfo);

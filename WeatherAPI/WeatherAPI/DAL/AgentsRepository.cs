@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MetricsInfrastucture.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManager.DAL
 {
@@ -19,7 +20,7 @@ namespace MetricsManager.DAL
                 connection.Execute("INSERT INTO agents(agenturl) VALUES(@agenturl)",
                     new
                     {
-                        agenturl = item.AgentAddress
+                        agenturl = item.AgentURL
                     });
             }
         }
@@ -47,7 +48,7 @@ namespace MetricsManager.DAL
                     return new AgentInfo
                     {
                         AgentId = 0,
-                        AgentAddress = @"http://localhost:5000"
+                        AgentURL = @"http://localhost:5000"
                     };
                 }
             }
