@@ -9,6 +9,7 @@ using MetricsManager.Request;
 
 namespace MetricsManager.Jobs
 {
+    [DisallowConcurrentExecution]
     public class HddMetricJob : IJob
     {
         private IRepositoryMM<HddMetric> _metricRepository;
