@@ -19,6 +19,8 @@ using MetricsManager.Jobs;
 using MetricsManager.Metrics;
 using MetricsManager.DAL;
 using System.Data.SQLite;
+using System.Reflection;
+using System.IO;
 
 namespace MetricsManager
 {
@@ -91,13 +93,27 @@ namespace MetricsManager
             services.AddHostedService<QuartzHostedService>();
 
             services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
-    .AddTransientHttpErrorPolicy(p =>
-         p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
+              .AddTransientHttpErrorPolicy(p =>
+                  p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WeatherAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "API сервиса агента сбора метрик",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Rodion",
+                        Email = "kim.Radik@mail.ru"
+                    }
+                });
+                // ”казываем файл из которого брать комментарии дл€ Swagger UI
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
@@ -115,7 +131,12 @@ namespace MetricsManager
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherAPI v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherAPI v1");
+                    c.RoutePrefix = string.Empty;
+                });
+                
             }
 
             app.UseHttpsRedirection();

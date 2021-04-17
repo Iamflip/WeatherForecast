@@ -35,6 +35,21 @@ namespace MetricsManager.Controllers
             _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
         }
 
+        /// <summary>
+        /// Получает метрики DotNet на заданном диапазоне времени от определённого агента
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        ///
+        ///     GET api/metrics/dotnet/agent/1/from/2020-10-10/to/2021-10-10
+        ///
+        /// </remarks>
+        /// <param name="agentId">айди агента</param>
+        /// <param name="fromTime">начальная дата</param>
+        /// <param name="toTime">конечная дата</param>
+        /// <returns>Список метрик, которые были сохранены в заданном диапазоне времени</returns>
+        /// <response code="200">Если все хорошо</response>
+        /// <response code="400">если передали не правильные параетры</response> 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
@@ -60,6 +75,22 @@ namespace MetricsManager.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает метрики DotNet на заданном диапазоне времени от определённого агента в персентилях
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        ///
+        ///     GET api/metrics/dotnet/agent/1/from/2020-10-10/to/2021-10-10/percentiles/4
+        ///
+        /// </remarks>
+        /// <param name="agentId">айди агента</param>
+        /// <param name="fromTime">начальная дата</param>
+        /// <param name="toTime">конечная дата</param>
+        /// <param name="percentile">персенитль по которому идёт сравнение</param>
+        /// <returns>Список метрик, которые были сохранены в заданном диапазоне времени</returns>
+        /// <response code="200">Если все хорошо</response>
+        /// <response code="400">если передали не правильные параетры</response> 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
         public IActionResult GetMetricsByPercentileFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime,
             [FromRoute] Percentile percentile)
@@ -88,6 +119,20 @@ namespace MetricsManager.Controllers
             return Ok($"По перцентилю {percentile} нагрузка не превышает {metrics.Max(metric => metric.Value)}%");
         }
 
+        /// <summary>
+        /// Получает метрики DotNet на заданном диапазоне времени от всех агентов
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        ///
+        ///     GET api/metrics/dotnet/cluster/from/2020-10-10/to/2021-10-10
+        ///
+        /// </remarks>
+        /// <param name="fromTime">начальная дата</param>
+        /// <param name="toTime">конечная дата</param>
+        /// <returns>Список метрик, которые были сохранены в заданном диапазоне времени</returns>
+        /// <response code="200">Если все хорошо</response>
+        /// <response code="400">если передали не правильные параетры</response> 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
@@ -125,6 +170,21 @@ namespace MetricsManager.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает метрики DotNet на заданном диапазоне времени от всех агентов с персентилем
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        ///
+        ///     GET api/metrics/dotnet/cluster/from/2020-10-10/to/2021-10-10/percentiles/4
+        ///
+        /// </remarks>
+        /// <param name="fromTime">начальная дата</param>
+        /// <param name="toTime">конечная дата</param>
+        /// <param name="percentile">персенитль по которому идёт сравнение</param>
+        /// <returns>Список метрик, которые были сохранены в заданном диапазоне времени</returns>
+        /// <response code="200">Если все хорошо</response>
+        /// <response code="400">если передали не правильные параетры</response> 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
         public IActionResult GetMetricsByPercentileFromAllCluster([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime,
             [FromRoute] Percentile percentile)
