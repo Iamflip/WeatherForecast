@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.DAL;
+using MetricsInfrastucture.Interfaces;
 using Quartz;
 using System;
 using System.Collections.Generic;

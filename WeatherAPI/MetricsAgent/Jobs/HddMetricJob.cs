@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MetricsAgent.Metric;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgent.Jobs
 {

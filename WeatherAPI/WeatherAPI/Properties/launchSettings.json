@@ -11,7 +11,7 @@
         "IIS Express": {
             "commandName": "IISExpress",
             "launchBrowser": true,
-            "launchUrl": "crud/read",
+            "launchUrl": "api/metrics/cpu/read",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }

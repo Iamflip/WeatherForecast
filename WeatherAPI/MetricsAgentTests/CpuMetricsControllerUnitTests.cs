@@ -7,6 +7,7 @@ using Moq;
 using MetricsAgent;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgentTests
 {
@@ -30,10 +31,8 @@ namespace MetricsAgentTests
         {
             _mock.Setup(repository => repository.GetFromTo(It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>())).Verifiable();
 
-            DateTime d1 = new DateTime(2011, 10, 10);
-            DateTime d2 = new DateTime(2011, 11, 11);
-            DateTimeOffset fromTime = new DateTimeOffset(d1);
-            DateTimeOffset toTime = new DateTimeOffset(d2);
+            DateTimeOffset fromTime = new DateTime(2011, 10, 10);
+            DateTimeOffset toTime = new DateTime(2011, 11, 11);
 
             var result = _controller.GetMetricsFromAgent(fromTime, toTime);
 
@@ -45,10 +44,8 @@ namespace MetricsAgentTests
         {
             _mock.Setup(repository => repository.GetFromTo(It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>())).Verifiable();
 
-            DateTime d1 = new DateTime(2011, 10, 10);
-            DateTime d2 = new DateTime(2011, 11, 11);
-            DateTimeOffset fromTime = new DateTimeOffset(d1);
-            DateTimeOffset toTime = new DateTimeOffset(d2);
+            DateTimeOffset fromTime = new DateTime(2011, 10, 10);
+            DateTimeOffset toTime = new DateTime(2011, 11, 11);
             Percentile percentile = Percentile.P99;
 
             var result = _controller.GetMetricsByPercentileFromAgent(fromTime, toTime, percentile);

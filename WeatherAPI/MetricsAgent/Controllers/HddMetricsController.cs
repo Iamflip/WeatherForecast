@@ -9,6 +9,7 @@ using System.IO;
 using MetricsAgent.Metric;
 using AutoMapper;
 using MetricsAgent.Responses;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgent.Controllers
 {
@@ -39,6 +40,31 @@ namespace MetricsAgent.Controllers
             }
 
             return Ok(_mapper.Map<HddMetricDto>(metric));
+        }
+
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsFromAgent([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        {
+            _logger.LogInformation($"Входные данные {fromTime} {toTime}");
+
+            var metrics = _repository.GetFromTo(fromTime, toTime);
+
+            if (metrics == null)
+            {
+                return Ok();
+            }
+
+            var response = new AllHddMetricsResponse()
+            {
+                Metrics = new List<HddMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<HddMetricDto>(metric));
+            }
+
+            return Ok(response);
         }
     }
 }
