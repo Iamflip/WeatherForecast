@@ -9,6 +9,7 @@ using MetricsManager.Request;
 
 namespace MetricsManager.Jobs
 {
+    [DisallowConcurrentExecution]
     public class NetworkMetricJob : IJob
     {
         private IRepositoryMM<NetworkMetric> _metricRepository;
