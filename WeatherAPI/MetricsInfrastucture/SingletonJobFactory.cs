@@ -3,7 +3,7 @@ using Quartz;
 using Quartz.Spi;
 using System;
 
-namespace MetricsAgent
+namespace MetricsInfrastucture
 {
     public class SingletonJobFactory : IJobFactory
     {
@@ -18,7 +18,7 @@ namespace MetricsAgent
             return _serviceProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob;
         }
 
-        public void ReturnJob(IJob job) 
+        public void ReturnJob(IJob job)
         {
 
         }

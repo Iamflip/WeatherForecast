@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Responses;
 using AutoMapper;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgent.Controllers
 {
