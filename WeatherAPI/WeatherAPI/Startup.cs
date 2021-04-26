@@ -38,7 +38,6 @@ namespace MetricsManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            ConfigureSqlLiteConnection(services);
 
             services.AddSingleton<IRepositoryMM<CpuMetric>, CpuMetricsRepository>();
             services.AddSingleton<IRepositoryMM<DotNetMetric>, DotNetMetricsRepository>();
@@ -116,28 +115,16 @@ namespace MetricsManager
 
         }
 
-        private void ConfigureSqlLiteConnection(IServiceCollection services)
-        {
-            string connectionString = "Data Source=:memory:";
-            var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            services.AddSingleton(connection);
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
-            if (env.IsDevelopment())
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherAPI v1");
-                    c.RoutePrefix = string.Empty;
-                });
-                
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса агента сбора метрик");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
