@@ -54,7 +54,7 @@ namespace MetricsManagerClient
             service.AddHttpClient<IMetricsClient, MetricsClient>();
         }
 
-        protected async override void OnStartup(StartupEventArgs e)
+        protected async override void OnStartup (StartupEventArgs e)
         {
             using (var serviceScope = _host.Services.CreateScope())
             {
@@ -65,7 +65,7 @@ namespace MetricsManagerClient
                     var mainWindow = services.GetRequiredService<MainWindow>();
                     mainWindow.Show();
                 }
-                catch 
+                catch
                 {
 
                 }
