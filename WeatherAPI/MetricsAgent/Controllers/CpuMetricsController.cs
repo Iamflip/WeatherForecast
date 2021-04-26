@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Data.SQLite;
 using MetricsAgent.Responses;
 using AutoMapper;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgent.Controllers
 {

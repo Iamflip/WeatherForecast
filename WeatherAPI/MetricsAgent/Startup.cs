@@ -13,6 +13,8 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 using System.Data.SQLite;
+using MetricsInfrastucture;
+using MetricsInfrastucture.Interfaces;
 
 namespace MetricsAgent
 {
@@ -101,12 +103,9 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MetricsAgent v1"));
-            }
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MetricsAgent v1"));
 
             app.UseHttpsRedirection();
 

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.Metric;
 using Dapper;
+using MetricsInfrastucture.Interfaces;
+using MetricsInfrastucture.Handlers;
 
 namespace MetricsAgent.DAL
 {
@@ -30,32 +32,6 @@ namespace MetricsAgent.DAL
             }
         }
 
-        public void Delete(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                connection.Execute("DELETE FROM rammetrics WHERE id = @id",
-                    new { id = id });
-            }
-        }
-
-        public IList<RamMetric> GetAll()
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.Query<RamMetric>("SELECT * FROM rammetrics").ToList();
-            }
-        }
-
-        public RamMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.QuerySingle<RamMetric>("SELECT * FROM rammetrics WHERE id = @id",
-                    new { id = id });
-            }
-        }
-
         public IList<RamMetric> GetFromTo(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
@@ -74,20 +50,6 @@ namespace MetricsAgent.DAL
             using (var connection = new SQLiteConnection(ConnectionString))
             {
                 return connection.QuerySingle<RamMetric>("SELECT * FROM rammetrics ORDER BY id DESC LIMIT 1");
-            }
-        }
-
-        public void Update(RamMetric item)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                connection.Execute("UPDATE rammetrics SET value = @value, time = @time WHERE id = @id",
-                    new
-                    {
-                        value = item.Value,
-                        time = item.Time.TotalSeconds,
-                        id = item.Id
-                    });
             }
         }
     }

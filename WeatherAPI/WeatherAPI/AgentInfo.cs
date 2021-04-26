@@ -7,8 +7,8 @@ namespace MetricsManager
 {
     public class AgentInfo
     {
-        public int AgentId { get; }
+        public int AgentId { get; set; }
 
-        public Uri AgentAddress { get; }
+        public string AgentURL { get; set; }
     }
 }
